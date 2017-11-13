@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    environment:
+      RAILS_ENV: docker
+      DATABASE_URL: mysql2://root:hogepw@db:3306
+    volumes:
+      - .:/app:rw
+    ports:
+      - '3000:3000'
+    tty: true
+    stdin_open: true
+    links:
+      - db
+  db:
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: 'hogepw'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+    driver: local
